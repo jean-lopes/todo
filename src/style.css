@@ -1,0 +1,15 @@
+body, #main {
+    overflow: auto; 
+}
+
+div {    
+    word-wrap: break-word;
+}
+
+.striped-text {
+    text-decoration: line-through;
+}
+
+.clickable {
+    cursor: pointer;
+}
