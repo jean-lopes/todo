@@ -20,3 +20,7 @@ cabal.project.local
 *.exe
 *.db
 *.db
+sqlite3.dll
+sqlite3.def
+requisitos.txt
+curl/ca-bundle.crt
