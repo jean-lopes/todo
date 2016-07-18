@@ -1,11 +1,12 @@
 'use strict;';
-var app = angular.module('todoApp', ['LocalStorageModule']);
-
-app.config(function (localStorageServiceProvider) {
-  localStorageServiceProvider.setPrefix('todoApp');
-});
-
-app.controller(
+var app = angular.module(
+    'todoApp', 
+    [ 'LocalStorageModule' ]
+).config(
+    function (localStorageServiceProvider) {
+        localStorageServiceProvider.setPrefix('todoApp');
+    }
+).controller(
     'todoCtrl',
     [
         '$scope',
@@ -17,6 +18,9 @@ app.controller(
             $scope.todos = [];
             $scope.isOfflineMode = true;
             $scope.currentFilter = 'all';
+            $scope.allCount = 0;
+            $scope.activeCount = 0;
+            $scope.completedCount = 0;
 
             $scope.resetTodo = function () {
                 $scope.todo = { id: null, task: "", done: false };
@@ -133,8 +137,20 @@ app.controller(
 
                     $scope.$watch(
                         "todos",
-                        function (newValue, oldValue) {
+                        function (newValue, oldValue, scope) {
                             localStorageService.set('todos', newValue);
+
+                            var active = 0;
+
+                            scope.todos.forEach(function (item) {
+                                if (!item.done) {
+                                    active++;
+                                }
+                            });
+
+                            scope.allCount = scope.todos.length;
+                            scope.activeCount = active;
+                            scope.completedCount = scope.allCount - scope.activeCount;
                         },
                         true
                     );

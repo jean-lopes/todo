@@ -4,13 +4,13 @@
         <title>TODO List</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="w3.css">
-        <link rel="stylesheet" href="w3-theme-teal.css">
-        <link rel="stylesheet" href="style.css"> 
-        <script src="jquery-2.2.4.min.js"></script>
-        <script src="angular.min.js"></script>
-        <script src="angular-local-storage.min.js"></script>        
-        <script src="todo.js"></script>
+        <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+        <link rel="stylesheet" href="http://www.w3schools.com/lib/w3-theme-teal.css">
+        <link rel="stylesheet" href="src/style.css">
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+        <script src="src/angular-local-storage.min.js"></script>
+        <script src="src/todo.js"></script>
     </head>
     <body class="w3-container w3-theme-dark">
         <div ng-app="todoApp" ng-controller="todoCtrl">
@@ -18,16 +18,16 @@
                 <form class="w3-form w3-padding-0" ng-submit="submit()">
                     <input class="w3-input w3-theme-light w3-text-theme" type="text" name="task" placeholder="New task" autocomplete="off" ng-model="todo.task">
                 </form>
-                                      
+
                 <div class="w3-margin-top">
                     <div class="w3-left">
-                        <button class="w3-btn" ng-class="updateCssFilter('all')" ng-click="filterAll()">All</button>
-                        <button class="w3-btn" ng-class="updateCssFilter('active')" ng-click="filterActive()">Active</button>
-                        <button class="w3-btn" ng-class="updateCssFilter('completed')" ng-click="filterCompleted()">Completed</button>
+                        <button class="w3-btn" ng-class="updateCssFilter('all')" ng-click="filterAll()">All&nbsp;<span class="w3-tag w3-theme-light w3-text-theme">{{allCount}}</span></button>
+                        <button class="w3-btn" ng-class="updateCssFilter('active')" ng-click="filterActive()">Active&nbsp;<span class="w3-tag w3-theme-light w3-text-theme">{{activeCount}}</span></button>
+                        <button class="w3-btn" ng-class="updateCssFilter('completed')" ng-click="filterCompleted()">Completed&nbsp;<span class="w3-tag w3-theme-light w3-text-theme">{{completedCount}}</span></button>
                     </div>
                     <div>
                         <button class="w3-btn w3-right w3-theme-dark" ng-click="clearCompleted()">Clear completed</button>
-                    </div>                
+                    </div>
                 </div>
             </div>
 
@@ -35,12 +35,12 @@
                 <div class="w3-container w3-card-2 w3-padding w3-margin-top w3-hover-theme w3-animate-zoom clickable" ng-repeat="t in todos | filter: filterBy(currentFilter) as results track by t.id " ng-click="toggleDone(t)" ng-class="updateCssDone(t)">
                     <span class="w3-closebtn" ng-click="delete(t)">&#x2716;</span>
                     <span class="w3-closebtn" ng-click="edit(t)">&#x1f589;</span>
-                    <div>{{t.task}}</div>                    
-                </div>   
-                <div class="w3-container w3-margin-top w3-animate-zoom w3-center" ng-if="results.length == 0">
+                    <div>{{t.task}}</div>
+                </div>
+                <div class="w3-container w3-margin-top w3-center w3-animate-zoom" ng-if="results.length == 0">
                     <strong>No tasks...</strong>
-                </div>           
-            </div>         
+                </div>
+            </div>
         </div>
     </body>
 </html>
