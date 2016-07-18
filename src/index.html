@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="style.css"> 
         <script src="jquery-2.2.4.min.js"></script>
         <script src="angular.min.js"></script>
+        <script src="angular-local-storage.min.js"></script>        
         <script src="todo.js"></script>
     </head>
     <body class="w3-container w3-theme-dark">
@@ -20,9 +21,9 @@
                                       
                 <div class="w3-margin-top">
                     <div class="w3-left">
-                        <button class="w3-btn w3-theme-dark" ng-click="filterAll()">All</button>
-                        <button class="w3-btn w3-theme-dark" ng-click="filterActive()">Active</button>
-                        <button class="w3-btn w3-theme-dark" ng-click="filterCompleted()">Completed</button>
+                        <button class="w3-btn" ng-class="updateCssFilter('all')" ng-click="filterAll()">All</button>
+                        <button class="w3-btn" ng-class="updateCssFilter('active')" ng-click="filterActive()">Active</button>
+                        <button class="w3-btn" ng-class="updateCssFilter('completed')" ng-click="filterCompleted()">Completed</button>
                     </div>
                     <div>
                         <button class="w3-btn w3-right w3-theme-dark" ng-click="clearCompleted()">Clear completed</button>
@@ -31,11 +32,14 @@
             </div>
 
             <div id="main">
-                <div class="w3-container w3-card-2 w3-padding w3-margin-top w3-hover-theme w3-animate-zoom clickable" ng-repeat="t in todos" ng-click="checkDone(t)" ng-class="updateCssDone(t)">
+                <div class="w3-container w3-card-2 w3-padding w3-margin-top w3-hover-theme w3-animate-zoom clickable" ng-repeat="t in todos | filter: filterBy(currentFilter) as results track by t.id " ng-click="toggleDone(t)" ng-class="updateCssDone(t)">
                     <span class="w3-closebtn" ng-click="delete(t)">&#x2716;</span>
                     <span class="w3-closebtn" ng-click="edit(t)">&#x1f589;</span>
                     <div>{{t.task}}</div>                    
-                </div>              
+                </div>   
+                <div class="w3-container w3-margin-top w3-animate-zoom w3-center" ng-if="results.length == 0">
+                    <strong>No tasks...</strong>
+                </div>           
             </div>         
         </div>
     </body>

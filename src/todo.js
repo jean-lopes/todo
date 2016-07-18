@@ -1,85 +1,25 @@
 'use strict;';
-var app = angular.module('todoApp', []);
+var app = angular.module('todoApp', ['LocalStorageModule']);
+
+app.config(function (localStorageServiceProvider) {
+  localStorageServiceProvider.setPrefix('todoApp');
+});
+
 app.controller(
     'todoCtrl',
     [
         '$scope',
         '$http',
-        function($scope, $http) {
+        '$log',
+        'localStorageService',
+        function($scope, $http, $log, localStorageService) {
             $scope.todo = {};
             $scope.todos = [];
+            $scope.isOfflineMode = true;
+            $scope.currentFilter = 'all';
 
             $scope.resetTodo = function () {
                 $scope.todo = { id: null, task: "", done: false };
-            };
-
-            $scope.submit = function () {
-                if ($scope.todo.task) {
-                    if ($scope.todo.id) {
-                        $http.put(
-                            "./todos/" + $scope.todo.id,
-                            $scope.todo
-                        ).then(
-                            function sucess(response) {
-                                $scope.todos.forEach(
-                                    function (item, index) {
-                                        if (item.id === $scope.todo.id) {
-                                            item.task = $scope.todo.task;
-                                            item.done = $scope.todo.done;
-                                        }
-                                    }
-                                );
-
-                                $scope.resetTodo();
-                            },
-                            function error(response) {
-                                $scope.resetTodo();
-                            }
-                        );
-                    } else {
-                        $http.post(
-                            "./todos", 
-                            $scope.todo
-                        ).then(
-                            function sucess(response) {
-                                $scope.todo.id = response.data;
-                            
-                                $scope.todos.push($scope.todo);
-
-                                $scope.resetTodo();
-                            },
-                            function error(response) {
-                                $scope.resetTodo();
-                            }
-                        );
-                    }
-                }            
-            };
-
-            $scope.filterAll = function () {
-
-            };
-
-            $scope.filterActive = function () {
-
-            };
-
-            $scope.filterCompleted = function () {
-
-            };
-
-            $scope.clearCompleted = function () {
-
-            };
-
-            $scope.edit = function (todo) {
-                $scope.todo = angular.copy(todo);
-                var input = angular.element('[ng-model="todo.task"]');
-                input.focus();
-            };
-
-            $scope.delete = function (todo) {
-
             };
 
             $scope.updateCssDone = function (todo) {
@@ -90,13 +30,125 @@ app.controller(
                 } 
             };
 
-            $scope.checkDone = function (todo) {
-                todo.done = !todo.done;
-                //TODO: $scope.update(todo);
+            $scope.updateCssFilter = function (filter) {
+                if ($scope.currentFilter === filter) {
+                    return "w3-theme";
+                } else {
+                    return "w3-theme-dark";
+                }
+            }
+
+            $scope.filterAll = function () {
+                $scope.currentFilter = 'all';
             };
 
-            $scope.resetTodo();
-            $scope.filterAll();
+            $scope.filterActive = function () {
+                $scope.currentFilter = 'active';
+            };
+
+            $scope.filterCompleted = function () {
+                $scope.currentFilter = 'completed';
+            };           
+
+            $scope.filterBy = function (currentFilter) {
+                return function (item) {
+                    return (currentFilter === 'all') 
+                        || (currentFilter === 'active'    && !item.done)
+                        || (currentFilter === 'completed' &&  item.done);
+                };
+            };
+
+            $scope.edit = function (todo) {
+                $scope.todo = angular.copy(todo);
+                var input = angular.element('[ng-model="todo.task"]');
+                input.focus();
+            }; 
+
+            $scope.submit = function () {
+                if ($scope.todo.id) {
+                    $scope.update($scope.todo);
+                } else {
+                    $scope.insert($scope.todo);
+                }
+
+                $scope.resetTodo();
+            };
+
+            $scope.clearCompleted = function () {
+                $scope.todos = 
+                    $scope.todos.filter(
+                        function (item) { 
+                            return !item.done 
+                        }
+                    );
+            };
+
+            $scope.toggleDone = function (todo) {
+                todo.done = !todo.done;
+            };
+
+            $scope.insert = function (todo) {
+                var max = 0;
+
+                $scope.todos.forEach(
+                    function (item) {
+                        if (item.id > max) {
+                            max = item.id;
+                        }
+                    }
+                );
+
+                $scope.todo.id = max + 1;
+            
+                $scope.todos.push($scope.todo);
+            };
+
+            $scope.update = function (todo) {
+                $scope.todos.forEach(
+                    function (item) {
+                        if (item.id === $scope.todo.id) {
+                            item.task = $scope.todo.task;
+                            item.done = $scope.todo.done;
+                        }
+                    }
+                );
+            };
+
+            $scope.delete = function (todo) {
+                $scope.todos = 
+                    $scope.todos.filter(
+                        function (item) { 
+                            return item.id !== todo.id;
+                        }
+                    );
+            };
+
+            $scope.init = function () {
+                $scope.resetTodo();
+                $scope.filterAll();
+
+                if (localStorageService.isSupported) {
+                    $scope.todos = localStorageService.get('todos') || [];
+                    $scope.currentFilter = localStorageService.get('currentFilter') || 'all';
+
+                    $scope.$watch(
+                        "todos",
+                        function (newValue, oldValue) {
+                            localStorageService.set('todos', newValue);
+                        },
+                        true
+                    );
+
+                    $scope.$watch(
+                        "currentFilter",
+                        function (newValue, oldValue) {
+                            localStorageService.set('currentFilter', newValue);
+                        }
+                    );
+                }
+            };
+
+            $scope.init();
         }
     ]
 );
