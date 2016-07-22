@@ -19,14 +19,14 @@
                     <input class="w3-input w3-theme-light w3-text-theme" type="text" name="task" placeholder="New task" autocomplete="off" ng-model="todo.task">
                 </form>
 
-                <div class="w3-margin-top">
-                    <div class="w3-left">
-                        <button class="w3-btn" ng-class="updateCssFilter('all')" ng-click="filterAll()">All&nbsp;<span class="w3-tag w3-theme-light w3-text-theme">{{allCount}}</span></button>
-                        <button class="w3-btn" ng-class="updateCssFilter('active')" ng-click="filterActive()">Active&nbsp;<span class="w3-tag w3-theme-light w3-text-theme">{{activeCount}}</span></button>
-                        <button class="w3-btn" ng-class="updateCssFilter('completed')" ng-click="filterCompleted()">Completed&nbsp;<span class="w3-tag w3-theme-light w3-text-theme">{{completedCount}}</span></button>
+                <div class="w3-row">
+                    <div class="w3-left w3-col s12 m12 l6">
+                        <button class="w3-btn w3-margin-top w3-border w3-col s12 m12 l4" ng-class="updateCssFilter('all')" ng-click="filterAll()">All&nbsp;<span class="w3-tag w3-theme-light w3-text-theme">{{allCount}}</span></button>
+                        <button class="w3-btn w3-margin-top w3-border w3-col s12 m12 l4" ng-class="updateCssFilter('active')" ng-click="filterActive()">Active&nbsp;<span class="w3-tag w3-theme-light w3-text-theme">{{activeCount}}</span></button>
+                        <button class="w3-btn w3-margin-top w3-border w3-col s12 m12 l4" ng-class="updateCssFilter('completed')" ng-click="filterCompleted()">Completed&nbsp;<span class="w3-tag w3-theme-light w3-text-theme">{{completedCount}}</span></button>
                     </div>
-                    <div>
-                        <button class="w3-btn w3-right w3-theme-dark" ng-click="clearCompleted()">Clear completed</button>
+                    <div class="w3-right w3-col s12 m12 l6">
+                        <button class="w3-btn w3-margin-top w3-border w3-theme-dark w3-col s12 m12 l12" ng-click="clearCompleted()">Clear completed</button>
                     </div>
                 </div>
             </div>
